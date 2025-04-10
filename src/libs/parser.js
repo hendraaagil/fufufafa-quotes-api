@@ -13,10 +13,17 @@ function parseMarkdown(markdown) {
 
   const result = []
   let currentItem = null
+  let isInCodeBlock = false
 
   // Process each line after the table of contents
   for (let i = startIndex; i < lines.length; i++) {
     const line = lines[i].trim()
+
+    // Check for code block markers
+    if (line.startsWith('```')) {
+      isInCodeBlock = !isInCodeBlock
+      continue
+    }
 
     // Match heading pattern (e.g., "##  201. Kampanye sambil tidur")
     const headingMatch = line.match(/^##\s+\d+\.\s+(.+)$/)
@@ -29,6 +36,7 @@ function parseMarkdown(markdown) {
       currentItem = {
         content: headingMatch[1],
         imageUrl: '',
+        url: '',
       }
       continue
     }
@@ -36,7 +44,12 @@ function parseMarkdown(markdown) {
     // Match image pattern (e.g., "![201](img/201.png)")
     const imageMatch = line.match(/!\[\d+\]\((.*?)\)/)
     if (imageMatch && currentItem) {
+      // Add static prefix to image path
       currentItem.imageUrl = `${baseUrl}${imageMatch[1]}`
+    }
+
+    if (isInCodeBlock && line.startsWith('http') && currentItem) {
+      currentItem.url = line.trim()
     }
   }
 
