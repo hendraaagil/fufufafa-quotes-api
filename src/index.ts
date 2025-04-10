@@ -20,7 +20,7 @@ app.get('/', (c) => {
       name: 'Hendra Agil',
       site: 'https://hendraaagil.dev',
     },
-    source: 'https://github.com/hendraaagil/...',
+    source: 'https://github.com/hendraaagil/fufufafa-quotes-api',
   })
 })
 
