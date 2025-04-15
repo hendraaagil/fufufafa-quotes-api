@@ -62,7 +62,16 @@ function parseMarkdown(markdown) {
 
 const fetchMarkdown = async () => {
   try {
-    const markdownFiles = ['readme-1.md', 'readme-2.md', 'readme-3.md']
+    // Get start and end numbers from command line arguments or use default
+    const start = parseInt(process.argv[2]) || 1
+    const end = parseInt(process.argv[3]) || 3
+
+    // Generate markdown files array from range
+    const markdownFiles = Array.from(
+      { length: end - start + 1 },
+      (_, i) => `readme-${start + i}.md`,
+    )
+
     const result = []
 
     for (const file of markdownFiles) {
