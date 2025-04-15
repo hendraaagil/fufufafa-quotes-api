@@ -1,0 +1,35 @@
+name: Sync Quotes
+
+on:
+  workflow_dispatch:
+    inputs:
+      startNumber:
+        description: 'Start number for readme-[n].md files'
+        required: true
+        default: '1'
+      endNumber:
+        description: 'End number for readme-[n].md files'
+        required: true
+        default: '3'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Run Parser
+        run: node src/libs/parser.js ${{ inputs.startNumber }} ${{ inputs.endNumber }}
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add src/data/quotes.json
+          git commit -m "sync: update quotes.json" || exit 0
+          git push
